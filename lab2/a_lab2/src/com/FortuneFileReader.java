@@ -82,12 +82,12 @@ public class FortuneFileReader {
         }
     }
 
-    public void read(HashMap<Integer, String> hm)
+    public String read(HashMap<Integer, String> hm)
             throws FileNotFoundException {
 
         if (hm == null || hm.isEmpty()) {
-            System.out.println("No fortunes available.");
-            return;
+            String result = "No fortunes available.";
+            return result;
         }
 
         SecureRandom random = new SecureRandom();
@@ -95,33 +95,25 @@ public class FortuneFileReader {
         String fortune = hm.get(randKey);
 
         if (fortune != null) {
-            System.out.println("Random Fortune:\n" + fortune + "\n Key found: " + randKey);
+            String result = "Random Fortune:\n" + fortune + "\n Key found: " + randKey;
+            return result;
         } else {
             System.out.println("No fortune at: " + randKey);
+            return "No fortune found at key: " + randKey;
         }
     }
 
-    public void write(HashMap<Integer, String> hm) throws FileNotFoundException {
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter a new fortune (finish input with an empty line):");
-        StringBuilder newFortune = new StringBuilder();
-        String line;
-        while (true) {
-            line = scanner.nextLine();
-            if (line.isEmpty()) break;
-            newFortune.append(line).append("\n");
-        }
-
+    public void write(HashMap<Integer, String> hm, StringBuilder newFortune) throws FileNotFoundException {
         int newKey = hm.size() + 1;
         hm.put(newKey, newFortune.toString());
-        System.out.println("---------------------------------\n\tNew fortune:\n" + newFortune.toString() + "\nKey assigned: " + newKey);
+        System.out.println("---------------------------------\n\tNew fortune:\n" + newFortune + "\nKey assigned: " + newKey);
 
         Path newPath = Paths.get("fortune-br-new.txt");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(newPath.toString()))) {
             for (String fortune : hm.values()) {
                 bw.write("%\n");
                 bw.write(fortune);
+                bw.write("%\n");
             }
         } catch (IOException e) {
             System.out.println("SHOW: Excecao ao escrever no novo arquivo.");
